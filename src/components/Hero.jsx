@@ -29,7 +29,7 @@ const Hero = () => {
             <Typewriter
               words={[
                 isMobile
-                  ? "Safe place for gamers. Play fair."
+                  ? "⚙️ I'm building this as a safe place for gamers. Join the team, aim high, and play fair."
                   : `⚙️ I'm building this as a safe place for gamers. Join the team, aim high, and play fair.`,
               ]}
               loop={false}
