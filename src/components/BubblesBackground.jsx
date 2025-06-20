@@ -1,7 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const BubblesBackground = () => {
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -9,21 +17,18 @@ const BubblesBackground = () => {
 
     const bubbles = [];
     const bubbleCount = 60;
-    let mouseX = 0.5;
-    let mouseY = 0.5;
 
     for (let i = 0; i < bubbleCount; i++) {
       const bubbleWrapper = document.createElement("div");
 
-      const size = Math.random() * 20 +10;
+      const size = Math.random() * 20 + 10;
       const startX = Math.random() * window.innerWidth;
       const startY = Math.random() * window.innerHeight;
       const emoji = [
-  "🔫", "💣", "🧨", "💥", "💀", "☠️", "🗡️",
-  "🎯", "🎖️", "🚁", "🛩️", "🧰", "🔥", "📡"
-][Math.floor(Math.random() * 14)];
+        "🔫", "💣", "🧨", "💥", "💀", "☠️", "🗡️",
+        "🎯", "🎖️", "🚁", "🛩️", "🧰", "🔥", "📡"
+      ][Math.floor(Math.random() * 14)];
 
-      // Inner emoji element with glow background
       bubbleWrapper.innerHTML = `
         <div style="
           display: flex;
@@ -32,7 +37,6 @@ const BubblesBackground = () => {
           width: ${size}px;
           height: ${size}px;
           border-radius: 50%;
-          
           font-size: ${size - 6}px;
           color: white;
           mix-blend-mode: screen;
@@ -51,42 +55,48 @@ const BubblesBackground = () => {
         el: bubbleWrapper,
         x: startX,
         y: startY,
-        speedX: (Math.random() - 0.5) * 1.2,
-        speedY: (Math.random() - 0.5) * 1.2,
+        speedX: isMobile ? 0 : (Math.random() - 0.5) * 1.2,
+        speedY: isMobile ? 0 : (Math.random() - 0.5) * 1.2,
       });
     }
 
+    let mouseX = 0.5;
+    let mouseY = 0.5;
+
     const handleMouseMove = (e) => {
-      mouseX = e.clientX / window.innerWidth - 0.5;
-      mouseY = e.clientY / window.innerHeight - 0.5;
+      if (!isMobile) {
+        mouseX = e.clientX / window.innerWidth - 0.5;
+        mouseY = e.clientY / window.innerHeight - 0.5;
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
     const animate = () => {
-      bubbles.forEach((bubble) => {
-        bubble.x += bubble.speedX + mouseX * 0.75;
-        bubble.y += bubble.speedY + mouseY * 0.75;
+      if (!isMobile) {
+        bubbles.forEach((bubble) => {
+          bubble.x += bubble.speedX + mouseX * 0.75;
+          bubble.y += bubble.speedY + mouseY * 0.75;
 
-        if (bubble.x < 0) bubble.x = window.innerWidth;
-        if (bubble.x > window.innerWidth) bubble.x = 0;
-        if (bubble.y < 0) bubble.y = window.innerHeight;
-        if (bubble.y > window.innerHeight) bubble.y = 0;
+          if (bubble.x < 0) bubble.x = window.innerWidth;
+          if (bubble.x > window.innerWidth) bubble.x = 0;
+          if (bubble.y < 0) bubble.y = window.innerHeight;
+          if (bubble.y > window.innerHeight) bubble.y = 0;
 
-        bubble.el.style.left = `${bubble.x}px`;
-        bubble.el.style.top = `${bubble.y}px`;
-      });
-
-      requestAnimationFrame(animate);
+          bubble.el.style.left = `${bubble.x}px`;
+          bubble.el.style.top = `${bubble.y}px`;
+        });
+        requestAnimationFrame(animate);
+      }
     };
 
-    animate();
+    if (!isMobile) animate(); // ✅ Only animate on non-mobile
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       bubbles.forEach((bubble) => container.removeChild(bubble.el));
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <div
