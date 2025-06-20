@@ -43,13 +43,30 @@ const Stream = () => {
         , and watch how real Warzone is played. No cheats, just pure skill. 🔥
       </p>
 
-      <div className="h-[55vh] aspect-video w-full max-w-4xl mx-auto border-4 border-red-600 rounded-lg shadow-[0_0_20px_4px_rgba(220,38,38,0.7)] overflow-hidden">
-        <iframe
-          src="https://player.kick.com/nocheat-wz?autoplay=false&muted=true"
-          allowFullScreen
-          allow="autoplay"
-          className="w-full h-full"
-        ></iframe>
+      <div className="h-[55vh] aspect-video w-full max-w-4xl mx-auto border-4 border-red-600 rounded-lg shadow-[0_0_20px_4px_rgba(220,38,38,0.7)] overflow-hidden bg-black flex items-center justify-center">
+        {isMobile ? (
+          <a
+            href="https://kick.com/nocheat-wz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center justify-center space-y-3 text-white hover:scale-105 transition-all"
+          >
+            <FaKickstarterK className="text-green-400 text-4xl" />
+            <p className="text-xs sm:text-sm text-gray-200">
+              Live stream is best viewed on desktop.
+            </p>
+            <span className="bg-red-600 px-4 py-1 rounded-full text-xs sm:text-sm hover:bg-red-700 transition">
+              Watch on Kick
+            </span>
+          </a>
+        ) : (
+          <iframe
+            src="https://player.kick.com/nocheat-wz?autoplay=false&muted=true"
+            allowFullScreen
+            allow="autoplay"
+            className="w-full h-full"
+          ></iframe>
+        )}
       </div>
     </div>
   );
@@ -60,7 +77,7 @@ const Stream = () => {
       className="min-h-[85vh] sm:min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-10 pt-6 sm:pt-10 pb-8 sm:pb-20 text-white scroll-mt-14 sm:scroll-mt-20"
     >
       {isMobile ? (
-        content // ✅ No animation on mobile
+        content
       ) : (
         <motion.div
           initial={{ opacity: 0, x: 100 }}
